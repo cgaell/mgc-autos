@@ -21,7 +21,7 @@ jobs:
           MYSQL_PASSWORD: milleniumglobal
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+        options: --health-cmd="mysqladmin ping -pmilleniumglobal" --health-interval=10s --health-timeout=5s --health-retries=5
 
     steps:
       - name: Clonar repositorio
@@ -40,6 +40,11 @@ jobs:
         run: npm test
         env:
           DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_NAME: mgc_seguros
+          DB_USER: mgc_admin
+          DB_PASSWORD: milleniumglobal
+          JWT_SECRET: llave_secreta_mgc
 
   deploy-staging:
     name: Despliegue en Entorno de Pruebas
@@ -51,5 +56,5 @@ jobs:
       - name: Simulación de Entrega Continua
         run: |
           echo "Desplegando microservicio de autenticación MGC Seguros en staging..."
-          echo "Verificando conexión con MySQL y variables de entorno..."
+          echo "Verificando variables de entorno y conexión con base de datos..."
           echo "Despliegue simulado exitosamente."
