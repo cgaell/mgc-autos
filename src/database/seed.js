@@ -38,7 +38,7 @@ async function seedMySQL() {
         numeroSerieVehiculo: `3N1AB7AP${i}KY${100000 + i}`,
         vigenciaInicio: '2026-01-01',
         vigenciaFin: '2027-01-01',
-        estatus: i % 4 === 0 ? 'Vencida' : 'Activa',
+        estatus: i % 4 === 0 ? 'Inactiva' : 'Activa',
         archivoPdfUrl: '/docs/poliza-mgc-muestra.pdf', // o la URL externa de Condusef
         userId: cliente.id
         });

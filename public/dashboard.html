@@ -15,8 +15,7 @@
 			<a class="brand" href="/"><img src="mgc.jpg" alt="Millenium Global Seguros"></a>
 			<div class="sidebar-label">Administración</div>
 			<nav class="sidebar-nav" aria-label="Secciones del panel">
-				<a class="active" href="#resumen"><span>◈</span> Resumen</a>
-				<a href="#solicitudes"><span>✦</span> Solicitudes</a>
+				<a class="active" href="#solicitudes"><span>✦</span> Solicitudes</a>
 				<a href="#polizas"><span>▣</span> Pólizas</a>
 			</nav>
 			<div class="sidebar-footer"><p>Tu camino,<br><em>bien protegido.</em></p><button id="logout-button" type="button">Cerrar sesión <span>↗</span></button></div>
@@ -24,15 +23,7 @@
 
 		<main class="main-content">
 			<header class="topbar"><div class="breadcrumb"><span>Panel</span><b>/</b> Administración</div><div class="profile"><span class="profile-mark" id="profile-mark">MG</span><span><small>Sesión activa</small><strong id="profile-name">Administrador</strong></span></div></header>
-			<section class="welcome" id="resumen"><div><p class="eyebrow">Panel de control</p><h1>Todo lo importante,<br><em>en un solo lugar.</em></h1><p class="welcome-copy">Supervisa las solicitudes y el parque vehicular de MGC Seguros.</p></div><div class="date-block"><span>Hoy</span><strong id="current-date"></strong></div></section>
-
-			<section class="stat-grid" aria-label="Resumen de actividad">
-				<article class="stat-card stat-highlight"><span class="stat-icon">✦</span><p>Solicitudes nuevas</p><strong id="request-count">--</strong><small>Registradas en el sistema</small></article>
-				<article class="stat-card"><span class="stat-icon">▣</span><p>Pólizas activas</p><strong id="active-policy-count">--</strong><small>Del parque vehicular</small></article>
-				<article class="stat-card"><span class="stat-icon">◷</span><p>Por revisar</p><strong id="pending-policy-count">--</strong><small>Pólizas pendientes</small></article>
-			</section>
-
-			<section class="content-section" id="solicitudes"><div class="section-header"><div><p class="eyebrow">Atención pendiente</p><h2>Solicitudes recientes</h2></div><span class="section-count" id="request-label">Cargando...</span></div><div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Vehículo</th><th>Uso</th><th>Contacto</th><th>Fecha</th></tr></thead><tbody id="requests-body"><tr><td colspan="5" class="loading">Cargando solicitudes...</td></tr></tbody></table></div></section>
+			<section class="content-section" id="solicitudes"><div class="section-header"><div><p class="eyebrow">Atención pendiente</p><h2>Solicitudes recientes</h2></div><span class="section-count" id="request-label">Cargando...</span></div><div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Vehículo</th><th>Uso</th><th>Contacto</th><th>Fecha</th><th>Estado y acción</th></tr></thead><tbody id="requests-body"><tr><td colspan="6" class="loading">Cargando solicitudes...</td></tr></tbody></table></div></section>
 
 			<section class="content-section" id="polizas"><div class="section-header"><div><p class="eyebrow">Control de cartera</p><h2>Pólizas del parque</h2></div><span class="section-count" id="policy-label">Cargando...</span></div><div class="table-wrap"><table><thead><tr><th>ID de póliza</th><th>Serie del vehículo</th><th>Vigencia</th><th>Estado</th></tr></thead><tbody id="policies-body"><tr><td colspan="4" class="loading">Cargando pólizas...</td></tr></tbody></table></div></section>
 			<p class="dashboard-footer">MGC Seguros <span>•</span> Panel administrativo</p>

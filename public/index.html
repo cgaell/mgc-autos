@@ -22,15 +22,18 @@
 		</nav>
 		<div class="auth-actions">
 			<div class="session-actions" id="session-actions" hidden>
-				<span class="session-greeting">Hola, <strong id="session-name"></strong></span>
-				<button class="auth-link" id="logout-button" type="button">Cerrar sesión</button>
+				<button class="user-menu-toggle" id="user-menu-toggle" type="button" aria-label="Abrir menú de usuario" aria-expanded="false"><span class="user-icon" aria-hidden="true"></span></button>
+				<div class="user-menu" id="user-menu" hidden>
+					<strong id="session-name"></strong>
+					<a class="admin-dashboard-link" id="admin-dashboard-link" href="/dashboard.html" hidden>⚙ Dashboard</a>
+					<button class="user-menu-logout" id="logout-button" type="button">Cerrar sesión</button>
+				</div>
 			</div>
 			<div class="guest-actions" id="guest-actions">
 				<button class="auth-link" type="button" data-auth-mode="login">Iniciar sesión</button>
 				<button class="auth-button" type="button" data-auth-mode="register">Registrarse</button>
 			</div>
 		</div>
-		<a class="header-link" href="#cotizador">Cotiza ahora <span aria-hidden="true">↗</span></a>
 	</header>
 
 	<main>
@@ -161,7 +164,7 @@
 		<section class="auth-panel">
 			<button class="modal-close" type="button" data-auth-close aria-label="Cerrar">×</button>
 			<img src="mgc.jpg" alt="Millenium Global Seguros" class="auth-logo">
-			<p class="eyebrow eyebrow-dark">Tu cuenta MGS</p>
+			<p class="eyebrow eyebrow-dark">Tu cuenta MGC</p>
 			<h2 id="auth-title">Inicia sesión</h2>
 			<p class="auth-intro" id="auth-intro">Consulta tus solicitudes y continúa cuando quieras.</p>
 			<form id="auth-form">

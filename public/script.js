@@ -80,16 +80,34 @@ const authNameField = document.querySelector('.auth-name-field');
 const guestActions = document.querySelector('#guest-actions');
 const sessionActions = document.querySelector('#session-actions');
 const sessionName = document.querySelector('#session-name');
+const adminDashboardLink = document.querySelector('#admin-dashboard-link');
+const userMenuToggle = document.querySelector('#user-menu-toggle');
+const userMenu = document.querySelector('#user-menu');
 const logoutButton = document.querySelector('#logout-button');
 let authMode = 'login';
 
 function updateSessionView() {
 	const name = localStorage.getItem('mgc_nombre');
+	const role = localStorage.getItem('mgc_rol');
 	const isAuthenticated = Boolean(localStorage.getItem('mgc_token') && name);
 	guestActions.hidden = isAuthenticated;
 	sessionActions.hidden = !isAuthenticated;
+	adminDashboardLink.hidden = role !== 'administrador';
 	if (isAuthenticated) sessionName.textContent = name;
 }
+
+userMenuToggle.addEventListener('click', () => {
+	const isOpen = !userMenu.hidden;
+	userMenu.hidden = isOpen;
+	userMenuToggle.setAttribute('aria-expanded', String(!isOpen));
+});
+
+document.addEventListener('click', (event) => {
+	if (!sessionActions.contains(event.target)) {
+		userMenu.hidden = true;
+		userMenuToggle.setAttribute('aria-expanded', 'false');
+	}
+});
 
 function setAuthMode(mode) {
 	authMode = mode;
@@ -164,6 +182,7 @@ logoutButton.addEventListener('click', () => {
 	localStorage.removeItem('mgc_token');
 	localStorage.removeItem('mgc_rol');
 	localStorage.removeItem('mgc_nombre');
+	userMenu.hidden = true;
 	updateSessionView();
 });
 

@@ -29,7 +29,7 @@ const Poliza = sequelize.define('Poliza', {
   vigenciaInicio: { type: DataTypes.DATEONLY, allowNull: false },
   vigenciaFin: { type: DataTypes.DATEONLY, allowNull: false },
   estatus: { 
-    type: DataTypes.ENUM('Activa', 'Pendiente', 'Cancelada', 'Vencida'), 
+    type: DataTypes.ENUM('Activa', 'Cancelada', 'Inactiva', 'Pendiente de renovación'), 
     defaultValue: 'Activa' 
   },
   archivoPdfUrl: { type: DataTypes.STRING(255), allowNull: true }
@@ -47,7 +47,9 @@ const Solicitud = sequelize.define('Solicitud', {
   name: { type: DataTypes.STRING(120), allowNull: false },
   email: { type: DataTypes.STRING(150), allowNull: false },
   phone: { type: DataTypes.STRING(30), allowNull: false },
-  photos: { type: DataTypes.JSON, allowNull: false, defaultValue: {} }
+  photos: { type: DataTypes.JSON, allowNull: false, defaultValue: {} },
+  estado: { type: DataTypes.ENUM('Pendiente', 'Aceptada', 'Rechazada'), allowNull: false, defaultValue: 'Pendiente' },
+  motivoRechazo: { type: DataTypes.STRING(500), allowNull: true }
 }, { tableName: 'solicitudes' });
 
 User.hasMany(Poliza, { foreignKey: 'userId' });
