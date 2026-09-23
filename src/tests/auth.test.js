@@ -19,8 +19,8 @@ describe('Pruebas Unitarias - Módulo de Autenticación y Roles MGC Seguros', ()
     const res = await request(app)
       .post('/api/auth/registrar')
       .send({
-        email: 'admin@mgc.com',
-        password: 'contrasenamilleniumglobal!',
+        email: 'admin2@mgc.com',
+        password: 'AdminPassword2026!',
         rol: 'administrador'
       });
     expect(res.statusCode).toEqual(201);
@@ -78,7 +78,7 @@ describe('Pruebas Unitarias - Módulo de Autenticación y Roles MGC Seguros', ()
   it('Un administrador sí puede acceder al panel administrativo (200)', async () => {
     const loginRes = await request(app)
       .post('/api/auth/login')
-      .send({ email: 'admin@mgc.com', password: 'contrasenamilleniumglobal!' });
+      .send({ email: 'admin2@mgc.com', password: 'AdminPassword2026!' });
 
     const res = await request(app)
       .get('/api/admin/polizas')
