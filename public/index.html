@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="MGC Seguros protege tu camino con coberturas claras y una cotización sencilla.">
+	<title>MGC Seguros | Tu camino, bien protegido</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<header class="site-header">
+		<a class="brand" href="#inicio" aria-label="MGC Seguros, inicio">
+			<img src="mgc.jpg" alt="Millenium Global Seguros">
+		</a>
+		<nav class="main-nav" aria-label="Navegación principal">
+			<a href="#beneficios">Por qué MGC</a>
+			<a href="#coberturas">Coberturas</a>
+			<a href="#proceso">Cómo funciona</a>
+		</nav>
+		<div class="auth-actions">
+			<div class="session-actions" id="session-actions" hidden>
+				<span class="session-greeting">Hola, <strong id="session-name"></strong></span>
+				<button class="auth-link" id="logout-button" type="button">Cerrar sesión</button>
+			</div>
+			<div class="guest-actions" id="guest-actions">
+				<button class="auth-link" type="button" data-auth-mode="login">Iniciar sesión</button>
+				<button class="auth-button" type="button" data-auth-mode="register">Registrarse</button>
+			</div>
+		</div>
+		<a class="header-link" href="#cotizador">Cotiza ahora <span aria-hidden="true">↗</span></a>
+	</header>
+
+	<main>
+		<section class="hero" id="inicio">
+			<div class="hero-copy">
+				<p class="eyebrow"><span class="eyebrow-dot"></span> Seguro de auto, a tu manera</p>
+				<h1>Tu camino merece<br><em>sentirse seguro.</em></h1>
+				<p class="hero-text">Protección clara para moverte con libertad. Cotiza en minutos y encuentra la cobertura que va contigo.</p>
+				<a class="button button-light" href="#cotizador">Quiero cotizar <span aria-hidden="true">→</span></a>
+				<p class="hero-note"><span class="check">✓</span> Sin compromiso · Respuesta inmediata</p>
+			</div>
+			<div class="hero-art" aria-label="Logo MGC Seguros">
+				<img class="hero-logo" src="mgc.jpg" alt="Millenium Global Seguros">
+				<div class="hero-badge"><strong>Tu tranquilidad</strong><span>va primero</span></div>
+			</div>
+			<div class="hero-bottom"><span>01</span><span class="line"></span><span>03</span><span>Conduce con confianza</span></div>
+		</section>
+
+		<section class="quote-section" id="cotizador">
+			<div class="section-intro">
+				<p class="eyebrow eyebrow-dark">Empieza aquí</p>
+				<h2>Una cotización que<br><em>sí entiende tu camino.</em></h2>
+				<p>Cuéntanos un poco sobre tu vehículo y prepararemos una propuesta pensada para ti.</p>
+			</div>
+			<div class="quote-card">
+				<div class="progress" aria-label="Progreso de cotización"><span class="progress-active"></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+				<div class="step-label">Paso <b id="step-number">1</b> de 7</div>
+				<form id="quote-form">
+					<fieldset class="form-step active" data-step="1">
+						<legend>¿Para qué necesitas esta cotización?</legend>
+						<p class="helper">Así entenderemos mejor qué quieres proteger.</p>
+						<div class="choice-list purpose-options">
+							<label class="choice-row"><input type="radio" name="purpose" value="new" checked><span><strong>Contratar un seguro nuevo</strong><small>Quiero asegurar un vehículo que aún no tiene póliza.</small></span><i>→</i></label>
+							<label class="choice-row"><input type="radio" name="purpose" value="renewal"><span><strong>Renovar mi seguro</strong><small>Estoy buscando una alternativa para mi próxima renovación.</small></span><i>→</i></label>
+							<label class="choice-row"><input type="radio" name="purpose" value="compare"><span><strong>Comparar opciones</strong><small>Quiero conocer qué protección puede convenirme.</small></span><i>→</i></label>
+						</div>
+						<button class="button button-dark next-step" type="button">Continuar <span>→</span></button>
+					</fieldset>
+
+					<fieldset class="form-step" data-step="2">
+						<legend>¿Qué línea de vehículo quieres asegurar?</legend>
+						<p class="helper">Selecciona la categoría que corresponda.</p>
+						<div class="choice-list">
+							<label class="choice-row"><input type="radio" name="line" value="civil" checked><span><strong>Coches civiles tradicionales</strong><small>Autos de uso particular, familiar o ejecutivo.</small></span><i>→</i></label>
+							<label class="choice-row"><input type="radio" name="line" value="trucks"><span><strong>Línea de camiones</strong><small>Camiones ligeros, medianos o de carga.</small></span><i>→</i></label>
+							<label class="choice-row"><input type="radio" name="line" value="fleet"><span><strong>Flotilla empresarial</strong><small>Dos o más vehículos para una operación.</small></span><i>→</i></label>
+						</div>
+						<div class="step-actions"><button class="text-button previous-step" type="button">← Atrás</button><button class="button button-dark next-step" type="button">Continuar <span>→</span></button></div>
+					</fieldset>
+
+					<fieldset class="form-step" data-step="3">
+						<legend>¿Qué tipo de vehículo es?</legend>
+						<p class="helper">Elige el tipo que más se parece al vehículo a asegurar.</p>
+						<div class="option-grid vehicle-options">
+							<label class="option-card"><input type="radio" name="vehicle" value="sedan" checked><span class="option-icon">▰</span><strong>Sedán</strong><small>Compacto o mediano</small></label>
+							<label class="option-card"><input type="radio" name="vehicle" value="suv"><span class="option-icon">▰</span><strong>SUV</strong><small>Camioneta familiar</small></label>
+							<label class="option-card"><input type="radio" name="vehicle" value="pickup"><span class="option-icon">▰</span><strong>Pickup</strong><small>Trabajo y aventura</small></label>
+							<label class="option-card"><input type="radio" name="vehicle" value="hatchback"><span class="option-icon">▰</span><strong>Hatchback</strong><small>Práctico y urbano</small></label>
+							<label class="option-card"><input type="radio" name="vehicle" value="van"><span class="option-icon">▰</span><strong>Van</strong><small>Pasajeros o carga</small></label>
+							<label class="option-card"><input type="radio" name="vehicle" value="truck"><span class="option-icon">▰</span><strong>Camión</strong><small>Carga y transporte</small></label>
+						</div>
+						<div class="step-actions"><button class="text-button previous-step" type="button">← Atrás</button><button class="button button-dark next-step" type="button">Continuar <span>→</span></button></div>
+					</fieldset>
+
+					<fieldset class="form-step" data-step="4">
+						<legend>Identifiquemos tu vehículo</legend>
+						<p class="helper">Escribe los datos tal como aparecen en la documentación.</p>
+						<div class="field-row vehicle-data"><label>Marca<input required type="text" name="make" placeholder="Ej. Toyota"></label><label>Modelo<input required type="text" name="model" placeholder="Ej. Corolla"></label><label>Año<input required type="number" name="year" min="1950" max="2027" placeholder="Ej. 2024"></label></div>
+						<div class="honesty-note"><span>i</span><small>La información debe ser completa y honesta. El precio puede variar según la situación real del vehículo y su uso.</small></div>
+						<div class="step-actions"><button class="text-button previous-step" type="button">← Atrás</button><button class="button button-dark next-step" type="button">Continuar <span>→</span></button></div>
+					</fieldset>
+
+					<fieldset class="form-step" data-step="5">
+						<legend>Cuéntanos sobre el uso</legend>
+						<p class="helper">Estos datos nos ayudan a preparar una propuesta adecuada.</p>
+						<div class="choice-list">
+							<label class="choice-row"><input type="radio" name="use" value="personal" checked><span><strong>Uso personal</strong><small>Traslados diarios, familia y fines de semana.</small></span><i>→</i></label>
+							<label class="choice-row"><input type="radio" name="use" value="work"><span><strong>Uso de trabajo</strong><small>Visitas, entregas o actividad profesional.</small></span><i>→</i></label>
+							<label class="choice-row"><input type="radio" name="use" value="fleet"><span><strong>Operación empresarial</strong><small>Vehículos que forman parte de una flotilla.</small></span><i>→</i></label>
+						</div>
+						<div class="step-actions"><button class="text-button previous-step" type="button">← Atrás</button><button class="button button-dark next-step" type="button">Continuar <span>→</span></button></div>
+					</fieldset>
+
+					<fieldset class="form-step" data-step="6">
+						<legend>Comparte imágenes del vehículo</legend>
+						<p class="helper">Puedes agregar hasta seis fotos para ayudarnos a conocerlo mejor.</p>
+						<div class="photo-grid">
+							<label class="photo-slot"><input type="file" name="photo-front" accept="image/*"><span>＋</span><strong>Frente</strong><small>Vista frontal</small></label>
+							<label class="photo-slot"><input type="file" name="photo-back" accept="image/*"><span>＋</span><strong>Parte trasera</strong><small>Vista posterior</small></label>
+							<label class="photo-slot"><input type="file" name="photo-left" accept="image/*"><span>＋</span><strong>Lateral izq.</strong><small>Perfil izquierdo</small></label>
+							<label class="photo-slot"><input type="file" name="photo-right" accept="image/*"><span>＋</span><strong>Lateral der.</strong><small>Perfil derecho</small></label>
+							<label class="photo-slot"><input type="file" name="photo-inside" accept="image/*"><span>＋</span><strong>Interior</strong><small>Tablero y asientos</small></label>
+							<label class="photo-slot"><input type="file" name="photo-serial" accept="image/*"><span>＋</span><strong>Identificación</strong><small>Placa o serie</small></label>
+						</div>
+						<div class="step-actions"><button class="text-button previous-step" type="button">← Atrás</button><button class="button button-dark next-step" type="button">Continuar <span>→</span></button></div>
+					</fieldset>
+
+					<fieldset class="form-step" data-step="7">
+						<legend>¿Cómo te contactamos?</legend>
+						<p class="helper">Déjanos tus datos para dar seguimiento a tu solicitud.</p>
+						<div class="contact-fields"><label>Nombre completo<input required type="text" name="name" placeholder="Tu nombre"></label><label>Correo electrónico<input required type="email" name="email" placeholder="tu@correo.com"></label><label>Teléfono<input required type="tel" name="phone" placeholder="55 0000 0000"></label></div>
+						<p class="honesty-legal">Al enviar confirmas que los datos proporcionados son correctos y completos.</p>
+						<div class="step-actions"><button class="text-button previous-step" type="button">← Atrás</button><button class="button button-dark" type="submit">Enviar solicitud <span>→</span></button></div>
+					</fieldset>
+				</form>
+				<div class="quote-result" id="quote-result" aria-live="polite">
+					<span class="thank-you-mark">✓</span><p class="eyebrow eyebrow-dark">Gracias por confiar en MGC</p><h3>Recibimos tu solicitud.</h3><p>Un especialista revisará tus datos y se pondrá en contacto contigo para continuar.</p><div class="contact-box"><strong>También puedes escribirnos</strong><a href="tel:+525512345678">+52 55 1234 5678</a><a href="mailto:contacto@mgcseguros.com">contacto@mgcseguros.com</a></div><button class="button button-dark restart" type="button">Nueva solicitud</button>
+				</div>
+				<p class="secure-note">⌁ Tus datos están protegidos y no compartimos tu información.</p>
+			</div>
+		</section>
+
+		<section class="benefits-section" id="beneficios">
+			<div class="section-heading"><p class="eyebrow">Lo que importa</p><h2>Protección que se entiende.</h2><p>Decide con información clara y el acompañamiento de un equipo que escucha.</p></div>
+			<div class="benefit-grid">
+				<article><span class="benefit-number">01</span><div class="benefit-icon">✓</div><h3>Información clara</h3><p>Te explicamos qué necesitamos y qué sigue, sin lenguaje complicado.</p></article>
+				<article><span class="benefit-number">02</span><div class="benefit-icon">↗</div><h3>Atención humana</h3><p>Una persona revisa tu caso y puede resolver tus dudas.</p></article>
+				<article><span class="benefit-number">03</span><div class="benefit-icon">♡</div><h3>Hecho para ti</h3><p>La información de tu vehículo nos ayuda a orientarte mejor.</p></article>
+			</div>
+		</section>
+
+		<section class="coverage-section" id="coberturas"><div><p class="eyebrow">Encuentra tu equilibrio</p><h2>La protección correcta empieza con <em>buenas preguntas.</em></h2></div><div class="coverage-copy"><p>Tu vehículo, la forma en que lo usas y lo que necesitas proteger son diferentes. Por eso primero conocemos tu situación.</p><a class="arrow-link" href="#cotizador">Comenzar mi solicitud <span>→</span></a></div></section>
+		<section class="process-section" id="proceso"><p class="eyebrow eyebrow-dark">Así de sencillo</p><h2>Un camino claro para ti.</h2><div class="process-grid"><div><span>1</span><h3>Elige tu situación</h3><p>Indica el propósito y la línea de tu vehículo.</p></div><div><span>2</span><h3>Completa los detalles</h3><p>Agrega datos, uso y fotografías desde un solo lugar.</p></div><div><span>3</span><h3>Hablemos</h3><p>Recibimos tu solicitud y te contactamos personalmente.</p></div></div></section>
+	</main>
+	<footer><a class="brand" href="#inicio"><img src="mgc.jpg" alt="Millenium Global Seguros"></a><p>Tu camino, bien protegido.</p><span>© 2026 Millenium Global Seguros</span></footer>
+	<div class="auth-modal" id="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title" hidden>
+		<div class="auth-backdrop" data-auth-close></div>
+		<section class="auth-panel">
+			<button class="modal-close" type="button" data-auth-close aria-label="Cerrar">×</button>
+			<img src="mgc.jpg" alt="Millenium Global Seguros" class="auth-logo">
+			<p class="eyebrow eyebrow-dark">Tu cuenta MGS</p>
+			<h2 id="auth-title">Inicia sesión</h2>
+			<p class="auth-intro" id="auth-intro">Consulta tus solicitudes y continúa cuando quieras.</p>
+			<form id="auth-form">
+				<label class="auth-name-field" hidden>Nombre completo<input type="text" name="nombre" autocomplete="name"></label>
+				<label>Correo electrónico<input required type="email" name="email" autocomplete="email" placeholder="tu@correo.com"></label>
+				<label>Contraseña<input required type="password" name="password" autocomplete="current-password" minlength="8" placeholder="Mínimo 8 caracteres"></label>
+				<button class="button button-dark" type="submit" id="auth-submit">Iniciar sesión <span>→</span></button>
+			</form>
+			<p class="auth-message" id="auth-message" role="status"></p>
+			<button class="auth-switch" id="auth-switch" type="button">¿No tienes cuenta? Regístrate</button>
+		</section>
+	</div>
+	<script src="script.js"></script>
+</body>
+</html>

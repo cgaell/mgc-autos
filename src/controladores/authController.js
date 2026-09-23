@@ -57,7 +57,7 @@ const login = async (req, res) => {
       { expiresIn: '2h' }
     );
 
-    return res.status(200).json({ token, rol: user.rol });
+    return res.status(200).json({ token, rol: user.rol, nombre: user.nombre });
   } catch (error) {
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
