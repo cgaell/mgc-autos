@@ -36,10 +36,30 @@ document.querySelectorAll('input[type="file"]').forEach((input) => {
 	});
 });
 
-quoteForm.addEventListener('submit', (event) => {
+quoteForm.addEventListener('submit', async (event) => {
 	event.preventDefault();
-	quoteCard.classList.add('result-visible');
-	quoteResult.classList.add('visible');
+	const submitButton = quoteForm.querySelector('button[type="submit"]');
+	const payload = Object.fromEntries(new FormData(quoteForm).entries());
+	payload.photos = Object.fromEntries([...quoteForm.querySelectorAll('input[type="file"]')]
+		.filter((input) => input.files[0])
+		.map((input) => [input.name, input.files[0].name]));
+	submitButton.disabled = true;
+
+	try {
+		const response = await fetch('/api/solicitudes', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(payload)
+		});
+		const result = await response.json();
+		if (!response.ok) throw new Error(result.error || 'No fue posible guardar la solicitud.');
+		quoteCard.classList.add('result-visible');
+		quoteResult.classList.add('visible');
+	} catch (error) {
+		window.alert(error.message);
+	} finally {
+		submitButton.disabled = false;
+	}
 });
 
 document.querySelector('.restart').addEventListener('click', () => {
@@ -121,6 +141,10 @@ authForm.addEventListener('submit', async (event) => {
 			localStorage.setItem('mgc_rol', result.rol);
 			localStorage.setItem('mgc_nombre', result.nombre);
 			updateSessionView();
+			if (result.rol === 'administrador') {
+				window.location.href = '/dashboard.html';
+				return;
+			}
 			authMessage.textContent = 'Sesión iniciada correctamente.';
 			authMessage.classList.add('success');
 			setTimeout(() => { authModal.hidden = true; }, 900);
