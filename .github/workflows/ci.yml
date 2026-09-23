@@ -2,9 +2,9 @@ name: MGC CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "master", "main" ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "master", "main" ]
 
 jobs:
   test-and-verify:
@@ -36,8 +36,17 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      - name: Inicializar tablas y esquema de MySQL
+        run: node src/database/seed.js
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_NAME: mgc_seguros
+          DB_USER: mgc_admin
+          DB_PASSWORD: milleniumglobal
+
       - name: Ejecutar pruebas con cobertura (>= 80%)
-        run: npm test
+        run: npx jest --coverage --runInBand --forceExit
         env:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
@@ -50,11 +59,8 @@ jobs:
     name: Despliegue en Entorno de Pruebas
     needs: test-and-verify
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
 
     steps:
       - name: Simulación de Entrega Continua
-        run: |
-          echo "Desplegando microservicio de autenticación MGC Seguros en staging..."
-          echo "Verificando variables de entorno y conexión con base de datos..."
-          echo "Despliegue simulado exitosamente."
+        run: echo "Pruebas pasadas en contenedor MySQL. Despliegue completado."
