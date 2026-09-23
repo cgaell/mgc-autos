@@ -1,7 +1,11 @@
 const request = require('supertest');
 const app = require('../app');
+const { sequelize } = require('../database/db');
 
 describe('Pruebas Unitarias - Módulo de Autenticación y Roles MGC Seguros', () => {
+  beforeAll(async () => {
+    await sequelize.sync({ force: true });
+  });
 
   it('Debe registrar un nuevo cliente exitosamente (201)', async () => {
     const res = await request(app)
@@ -86,5 +90,9 @@ describe('Pruebas Unitarias - Módulo de Autenticación y Roles MGC Seguros', ()
 
     expect(res.statusCode).toEqual(200);
     expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  afterAll(async () => {
+    await sequelize.close();
   });
 });
