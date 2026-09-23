@@ -1,0 +1,55 @@
+name: MGC CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  test-and-verify:
+    name: Pruebas Unitarias y Cobertura (Jest)
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: milleniumglobal
+          MYSQL_DATABASE: mgc_seguros
+          MYSQL_USER: mgc_admin
+          MYSQL_PASSWORD: milleniumglobal
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar pruebas con cobertura (>= 80%)
+        run: npm test
+        env:
+          DB_HOST: 127.0.0.1
+
+  deploy-staging:
+    name: Despliegue en Entorno de Pruebas
+    needs: test-and-verify
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Simulación de Entrega Continua
+        run: |
+          echo "Desplegando microservicio de autenticación MGC Seguros en staging..."
+          echo "Verificando conexión con MySQL y variables de entorno..."
+          echo "Despliegue simulado exitosamente."
