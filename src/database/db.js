@@ -35,7 +35,22 @@ const Poliza = sequelize.define('Poliza', {
   archivoPdfUrl: { type: DataTypes.STRING(255), allowNull: true }
 }, { tableName: 'polizas' });
 
+const Solicitud = sequelize.define('Solicitud', {
+  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+  purpose: { type: DataTypes.STRING(30), allowNull: false },
+  line: { type: DataTypes.STRING(30), allowNull: false },
+  vehicle: { type: DataTypes.STRING(30), allowNull: false },
+  make: { type: DataTypes.STRING(80), allowNull: false },
+  model: { type: DataTypes.STRING(80), allowNull: false },
+  year: { type: DataTypes.INTEGER, allowNull: false },
+  use: { type: DataTypes.STRING(30), allowNull: false },
+  name: { type: DataTypes.STRING(120), allowNull: false },
+  email: { type: DataTypes.STRING(150), allowNull: false },
+  phone: { type: DataTypes.STRING(30), allowNull: false },
+  photos: { type: DataTypes.JSON, allowNull: false, defaultValue: {} }
+}, { tableName: 'solicitudes' });
+
 User.hasMany(Poliza, { foreignKey: 'userId' });
 Poliza.belongsTo(User, { foreignKey: 'userId' });
 
-module.exports = { sequelize, User, Poliza };
+module.exports = { sequelize, User, Poliza, Solicitud };
