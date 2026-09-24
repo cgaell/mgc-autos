@@ -113,7 +113,7 @@ a {
   display: inline-block;
   width: 8px;
   height: 8px;
-  background: var(--pink);
+  background: var(--);
   border-radius: 50%;
   margin-right: 8px;
 }
@@ -1485,4 +1485,11 @@ body {
 .honesty-legal,
 .secure-note {
   font-weight: 400;
+}
+.hero-text,
+.hero-note {
+  color: #fff;
+}
+.hero .eyebrow {
+  color: #fff;
 }

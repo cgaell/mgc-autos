@@ -45,13 +45,29 @@ const updatePolicyStatus = async (id, estatus) => {
 	return result;
 };
 
+const deleteAdminRecord = async (resource, id, label) => {
+	if (!window.confirm(`¿Seguro que deseas eliminar esta ${label}? Esta acción no se puede deshacer.`)) return false;
+	const response = await fetch(`/api/admin/${resource}/${encodeURIComponent(id)}`, {
+		method: 'DELETE',
+		headers: { Authorization: `Bearer ${token}` }
+	});
+	if (!response.ok) {
+		const result = await response.json();
+		throw new Error(result.error || `No fue posible eliminar la ${label}.`);
+	}
+	return true;
+};
+
+const trashButton = (type, id) => `<button class="delete-button delete-${type}" data-${type}-id="${id}" type="button" aria-label="Eliminar ${type === 'request' ? 'solicitud' : 'póliza'}" title="Eliminar">✖</button>`;
+
 const requestActions = (request) => {
 	const estado = request.estado || 'Pendiente';
+	const deleteButton = trashButton('request', request.id);
 	if (estado !== 'Pendiente') {
 		const reason = request.motivoRechazo ? `<small class="rejection-reason">Motivo: ${request.motivoRechazo}</small>` : '';
-		return `<span class="status ${estado === 'Aceptada' ? 'accepted' : 'rejected'}">${estado}</span>${reason}`;
+		return `<div class="request-actions"><div><span class="status ${estado === 'Aceptada' ? 'accepted' : 'rejected'}">${estado}</span>${deleteButton}</div>${reason}</div>`;
 	}
-	return `<div class="request-actions"><select class="request-status" data-request-id="${request.id}" aria-label="Estado de solicitud"><option value="">Actualizar...</option><option value="Aceptada">Aceptar</option><option value="Rechazada">Rechazar</option></select><textarea class="rejection-input" data-request-id="${request.id}" placeholder="Motivo del rechazo" aria-label="Motivo del rechazo" hidden></textarea><button class="save-request-status" data-request-id="${request.id}" type="button">Guardar</button></div>`;
+	return `<div class="request-actions"><select class="request-status" data-request-id="${request.id}" aria-label="Estado de solicitud"><option value="">Actualizar...</option><option value="Aceptada">Aceptar</option><option value="Rechazada">Rechazar</option></select><textarea class="rejection-input" data-request-id="${request.id}" placeholder="Motivo del rechazo" aria-label="Motivo del rechazo" hidden></textarea><div class="action-row"><button class="save-request-status" data-request-id="${request.id}" type="button">Guardar</button>${deleteButton}</div></div>`;
 };
 
 const renderRequests = (requests) => {
@@ -82,6 +98,20 @@ const renderRequests = (requests) => {
 			button.disabled = false;
 		}
 	}));
+	body.querySelectorAll('.delete-request').forEach((button) => button.addEventListener('click', async () => {
+		button.disabled = true;
+		try {
+			const deleted = await deleteAdminRecord('solicitudes', button.dataset.requestId, 'solicitud');
+			if (!deleted) {
+				button.disabled = false;
+				return;
+			}
+			renderRequests(await getAdminData('solicitudes'));
+		} catch (error) {
+			window.alert(error.message);
+			button.disabled = false;
+		}
+	}));
 };
 
 const renderPolicies = (policies) => {
@@ -91,7 +121,7 @@ const renderPolicies = (policies) => {
 		body.innerHTML = '<tr><td colspan="4" class="empty">No hay pólizas para mostrar.</td></tr>';
 		return;
 	}
-	body.innerHTML = policies.slice(0, 8).map((policy) => `<tr><td><strong>${policy.id}</strong></td><td>${policy.numeroSerieVehiculo}</td><td>${formatDate(policy.vigenciaInicio)} - ${formatDate(policy.vigenciaFin)}</td><td><div class="policy-actions"><span class="status ${statusClass(policy.estatus)}">${policy.estatus}</span><select class="policy-status" data-policy-id="${policy.id}" aria-label="Estatus de póliza"><option value="">Actualizar...</option><option value="Activa">Activa</option><option value="Cancelada">Cancelada</option><option value="Inactiva">Inactiva</option><option value="Pendiente de renovación">Pendiente de renovación</option></select><button class="save-policy-status" data-policy-id="${policy.id}" type="button">Guardar</button></div></td></tr>`).join('');
+	body.innerHTML = policies.slice(0, 8).map((policy) => `<tr><td><strong>${policy.id}</strong></td><td>${policy.numeroSerieVehiculo}</td><td>${formatDate(policy.vigenciaInicio)} - ${formatDate(policy.vigenciaFin)}</td><td><div class="policy-actions"><span class="status ${statusClass(policy.estatus)}">${policy.estatus}</span><select class="policy-status" data-policy-id="${policy.id}" aria-label="Estatus de póliza"><option value="">Actualizar...</option><option value="Activa">Activa</option><option value="Cancelada">Cancelada</option><option value="Inactiva">Inactiva</option><option value="Pendiente de renovación">Pendiente de renovación</option></select><div class="action-row"><button class="save-policy-status" data-policy-id="${policy.id}" type="button">Guardar</button>${trashButton('policy', policy.id)}</div></div></td></tr>`).join('');
 	body.querySelectorAll('.save-policy-status').forEach((button) => button.addEventListener('click', async () => {
 		const id = button.dataset.policyId;
 		const select = body.querySelector(`.policy-status[data-policy-id="${id}"]`);
@@ -101,6 +131,20 @@ const renderPolicies = (policies) => {
 			await updatePolicyStatus(id, select.value);
 			const updatedPolicies = await getAdminData('polizas');
 			renderPolicies(updatedPolicies);
+		} catch (error) {
+			window.alert(error.message);
+			button.disabled = false;
+		}
+	}));
+	body.querySelectorAll('.delete-policy').forEach((button) => button.addEventListener('click', async () => {
+		button.disabled = true;
+		try {
+			const deleted = await deleteAdminRecord('polizas', button.dataset.policyId, 'póliza');
+			if (!deleted) {
+				button.disabled = false;
+				return;
+			}
+			renderPolicies(await getAdminData('polizas'));
 		} catch (error) {
 			window.alert(error.message);
 			button.disabled = false;

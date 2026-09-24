@@ -70,6 +70,32 @@
   opacity: 0.55;
   cursor: wait;
 }
+.action-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.delete-button {
+  border: 1px solid #f0c4d8;
+  padding: 6px 8px;
+  background: #fff5fa;
+  color: var(--pink);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+.delete-button:hover {
+  background: #fbeaf1;
+}
+.delete-button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.request-actions > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 .rejection-reason {
   display: block;
   max-width: 180px;
@@ -654,5 +680,118 @@ textarea {
   }
   .dashboard-footer {
     margin-top: 30px;
+  }
+}
+
+@media (max-width: 700px) {
+  .topbar {
+    gap: 12px;
+  }
+  .profile {
+    flex-shrink: 0;
+  }
+  .table-wrap {
+    overflow: visible;
+    border: 0;
+    background: transparent;
+  }
+  table,
+  tbody,
+  tr,
+  td {
+    display: block;
+  }
+  table {
+    min-width: 0;
+  }
+  thead {
+    display: none;
+  }
+  tbody tr {
+    margin-bottom: 12px;
+    border: 1px solid var(--line);
+    background: #fff;
+  }
+  tbody tr:last-child {
+    margin-bottom: 0;
+  }
+  tbody td {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 14px;
+    border-bottom: 1px solid #edf0f5;
+    text-align: right;
+  }
+  tbody td::before {
+    flex: 0 0 92px;
+    color: #8c98aa;
+    content: "";
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+  tbody td:nth-child(1)::before {
+    content: "Cliente";
+  }
+  tbody td:nth-child(2)::before {
+    content: "Vehículo";
+  }
+  tbody td:nth-child(3)::before {
+    content: "Uso";
+  }
+  tbody td:nth-child(4)::before {
+    content: "Contacto";
+  }
+  tbody td:nth-child(5)::before {
+    content: "Fecha";
+  }
+  tbody td:nth-child(6)::before {
+    content: "Estado";
+  }
+  #policies-body td:nth-child(1)::before {
+    content: "Póliza";
+  }
+  #policies-body td:nth-child(2)::before {
+    content: "VIN";
+  }
+  #policies-body td:nth-child(3)::before {
+    content: "Vigencia";
+  }
+  #policies-body td:nth-child(4)::before {
+    content: "Estado";
+  }
+  tbody td:last-child {
+    display: block;
+    text-align: left;
+  }
+  tbody td:last-child::before {
+    display: block;
+    margin-bottom: 8px;
+  }
+  tbody td[colspan] {
+    display: block;
+    text-align: center;
+  }
+  tbody td[colspan]::before {
+    display: none;
+  }
+  .request-actions,
+  .policy-actions {
+    min-width: 0;
+    width: 100%;
+  }
+  .request-actions > div:first-child {
+    justify-content: space-between;
+  }
+  .action-row {
+    width: 100%;
+  }
+  .action-row .save-request-status,
+  .action-row .save-policy-status {
+    flex: 1;
   }
 }

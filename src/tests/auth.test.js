@@ -155,6 +155,19 @@ describe('API MGC Seguros', () => {
       expect(missing.statusCode).toBe(404);
       expect(forbidden.statusCode).toBe(403);
     });
+
+    it('permite al administrador eliminar una póliza y la quita de la base de datos', async () => {
+      const forbidden = await request(app)
+        .delete('/api/admin/polizas/POL-TEST-0002')
+        .set(authHeader(clienteToken));
+      const response = await request(app)
+        .delete('/api/admin/polizas/POL-TEST-0002')
+        .set(authHeader(administradorToken));
+
+      expect(forbidden.statusCode).toBe(403);
+      expect(response.statusCode).toBe(204);
+      expect(await Poliza.findByPk('POL-TEST-0002')).toBeNull();
+    });
   });
 
   describe('Solicitudes de cotización', () => {
@@ -227,6 +240,8 @@ describe('API MGC Seguros', () => {
       expect(response.statusCode).toBe(200);
       expect(response.body.estado).toBe('Aceptada');
       expect(response.body.motivoRechazo).toBeNull();
+      expect(response.body.poliza).toMatchObject({ estatus: 'Activa', solicitudId: created.body.solicitudId });
+      expect(await Poliza.findOne({ where: { solicitudId: created.body.solicitudId } })).not.toBeNull();
     });
 
     it('permite rechazar una solicitud guardando el motivo', async () => {
@@ -253,6 +268,20 @@ describe('API MGC Seguros', () => {
 
       expect(invalidStatus.statusCode).toBe(400);
       expect(missing.statusCode).toBe(404);
+    });
+
+    it('permite al administrador eliminar una solicitud y la quita de la base de datos', async () => {
+      const created = await request(app).post('/api/solicitudes').send({ ...validRequest, email: 'delete@mgc.com' });
+      const forbidden = await request(app)
+        .delete(`/api/admin/solicitudes/${created.body.solicitudId}`)
+        .set(authHeader(clienteToken));
+      const response = await request(app)
+        .delete(`/api/admin/solicitudes/${created.body.solicitudId}`)
+        .set(authHeader(administradorToken));
+
+      expect(forbidden.statusCode).toBe(403);
+      expect(response.statusCode).toBe(204);
+      expect(await Solicitud.findByPk(created.body.solicitudId)).toBeNull();
     });
   });
 });

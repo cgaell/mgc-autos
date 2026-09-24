@@ -32,7 +32,8 @@ const Poliza = sequelize.define('Poliza', {
     type: DataTypes.ENUM('Activa', 'Cancelada', 'Inactiva', 'Pendiente de renovación'), 
     defaultValue: 'Activa' 
   },
-  archivoPdfUrl: { type: DataTypes.STRING(255), allowNull: true }
+  archivoPdfUrl: { type: DataTypes.STRING(255), allowNull: true },
+  solicitudId: { type: DataTypes.INTEGER, allowNull: true, unique: true }
 }, { tableName: 'polizas' });
 
 const Solicitud = sequelize.define('Solicitud', {

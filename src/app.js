@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const { registrar, login } = require('./controladores/authController');
 const { verifyToken, verifyRole } = require('./middleware/authMiddleware');
-const { Poliza, Solicitud } = require('./database/db');
+const { sequelize, User, Poliza, Solicitud } = require('./database/db');
 
 const app = express();
 
@@ -92,7 +92,20 @@ app.patch('/api/admin/polizas/:id', verifyToken, verifyRole('administrador'), as
   }
 });
 
+app.delete('/api/admin/polizas/:id', verifyToken, verifyRole('administrador'), async (req, res) => {
+  try {
+    const poliza = await Poliza.findByPk(req.params.id);
+    if (!poliza) return res.status(404).json({ error: 'Póliza no encontrada' });
+
+    await poliza.destroy();
+    return res.status(204).send();
+  } catch (error) {
+    return res.status(500).json({ error: 'No fue posible eliminar la póliza' });
+  }
+});
+
 app.patch('/api/admin/solicitudes/:id', verifyToken, verifyRole('administrador'), async (req, res) => {
+  let transaction;
   try {
     const { estado, motivoRechazo } = req.body;
     if (!['Aceptada', 'Rechazada'].includes(estado)) {
@@ -105,13 +118,49 @@ app.patch('/api/admin/solicitudes/:id', verifyToken, verifyRole('administrador')
     const solicitud = await Solicitud.findByPk(req.params.id);
     if (!solicitud) return res.status(404).json({ error: 'Solicitud no encontrada' });
 
+    transaction = await sequelize.transaction();
+    let poliza = await Poliza.findOne({ where: { solicitudId: solicitud.id }, transaction });
+
+    if (estado === 'Aceptada' && !poliza) {
+      const cliente = await User.findOne({ where: { email: solicitud.email }, transaction });
+      const inicio = new Date();
+      const fin = new Date(inicio);
+      fin.setFullYear(fin.getFullYear() + 1);
+      const dateOnly = (date) => date.toISOString().slice(0, 10);
+
+      poliza = await Poliza.create({
+        id: `POL-${inicio.getFullYear()}-${String(solicitud.id).padStart(6, '0')}`,
+        numeroSerieVehiculo: `MGC-SOL-${solicitud.id}`,
+        vigenciaInicio: dateOnly(inicio),
+        vigenciaFin: dateOnly(fin),
+        estatus: 'Activa',
+        solicitudId: solicitud.id,
+        userId: cliente?.id || null
+      }, { transaction });
+    }
+
     await solicitud.update({
       estado,
       motivoRechazo: estado === 'Rechazada' ? motivoRechazo.trim() : null
-    });
-    return res.status(200).json(solicitud);
+    }, { transaction });
+
+    await transaction.commit();
+    return res.status(200).json({ ...solicitud.toJSON(), poliza });
   } catch (error) {
+    if (transaction) await transaction.rollback();
     return res.status(500).json({ error: 'No fue posible actualizar la solicitud' });
+  }
+});
+
+app.delete('/api/admin/solicitudes/:id', verifyToken, verifyRole('administrador'), async (req, res) => {
+  try {
+    const solicitud = await Solicitud.findByPk(req.params.id);
+    if (!solicitud) return res.status(404).json({ error: 'Solicitud no encontrada' });
+
+    await solicitud.destroy();
+    return res.status(204).send();
+  } catch (error) {
+    return res.status(500).json({ error: 'No fue posible eliminar la solicitud' });
   }
 });
 
