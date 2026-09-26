@@ -1,7 +1,11 @@
 const request = require('supertest');
 const bcrypt = require('bcryptjs');
+jest.mock('../servicios/smsService', () => ({
+  enviarSmsConfirmacion: jest.fn().mockResolvedValue(undefined)
+}));
 const { sequelize, User, Poliza, Solicitud } = require('../database/db');
 const app = require('../app');
+const { enviarSmsConfirmacion } = require('../servicios/smsService');
 
 const cliente = {
   nombre: 'Cliente de Prueba',
@@ -189,6 +193,10 @@ describe('API MGC Seguros', () => {
       expect(saved.estado).toBe('Pendiente');
       expect(saved.use).toBe('Uso personal');
       expect(saved.photos).toEqual(validRequest.photos);
+      expect(enviarSmsConfirmacion).toHaveBeenCalledWith({
+        phone: validRequest.phone,
+        name: validRequest.name
+      });
     });
 
     it('traduce los otros usos del formulario', async () => {
