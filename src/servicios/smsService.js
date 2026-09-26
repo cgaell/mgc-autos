@@ -1,4 +1,5 @@
 const twilio = require('twilio');
+const { randomInt } = require('crypto');
 
 const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER } = process.env;
 const smsConfigured = Boolean(TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && TWILIO_PHONE_NUMBER);
@@ -22,7 +23,7 @@ const enviarSmsConfirmacion = async ({ phone, name }) => {
   }
 
   try {
-    const codigo = Math.floor(100000 + Math.random() * 900000);
+    const codigo = randomInt(100000, 1000000);
 
     // Formato exacto predefinido admitido por Twilio Trial:
     const response = await client.messages.create({

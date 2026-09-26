@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('node:path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const express = require('express');
@@ -14,6 +14,9 @@ const {
 } = require('./servicios/emailService');
 
 const app = express();
+
+const sanitizeLogMessage = (message) => String(message || 'Error desconocido')
+  .replace(/[\u0000-\u001F\u007F]/g, ' ');
 
 app.use(cors());
 app.use(express.json());
@@ -79,7 +82,7 @@ app.post('/api/solicitudes', async (req, res) => {
     } catch (emailError) {
       console.error(
         'No fue posible enviar el correo de confirmación:',
-        emailError.message
+        sanitizeLogMessage(emailError.message)
       );
     }
 
@@ -298,7 +301,7 @@ app.patch(
       } catch (emailError) {
         console.error(
           'No fue posible enviar el correo de resultado:',
-          emailError.message
+            sanitizeLogMessage(emailError.message)
         );
       }
 
