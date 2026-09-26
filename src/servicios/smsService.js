@@ -1,5 +1,5 @@
 const twilio = require('twilio');
-const { randomInt } = require('crypto');
+const { randomInt } = require('node:crypto');
 
 const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER } = process.env;
 const smsConfigured = Boolean(TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN && TWILIO_PHONE_NUMBER);
