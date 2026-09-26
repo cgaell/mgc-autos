@@ -1,11 +1,13 @@
 const request = require('supertest');
 const bcrypt = require('bcryptjs');
-jest.mock('../servicios/smsService', () => ({
-  enviarSmsConfirmacion: jest.fn().mockResolvedValue(undefined)
+jest.mock('../servicios/emailService', () => ({
+  enviarConfirmacionSolicitud: jest.fn().mockResolvedValue(undefined),
+  enviarResultadoSolicitud: jest.fn().mockResolvedValue(undefined)
 }));
 const { sequelize, User, Poliza, Solicitud } = require('../database/db');
 const app = require('../app');
-const { enviarSmsConfirmacion } = require('../servicios/smsService');
+const { enviarResultadoSolicitud } = require('../servicios/emailService');
+const fs = require('node:fs');
 
 const cliente = {
   nombre: 'Cliente de Prueba',
@@ -193,10 +195,6 @@ describe('API MGC Seguros', () => {
       expect(saved.estado).toBe('Pendiente');
       expect(saved.use).toBe('Uso personal');
       expect(saved.photos).toEqual(validRequest.photos);
-      expect(enviarSmsConfirmacion).toHaveBeenCalledWith({
-        phone: validRequest.phone,
-        name: validRequest.name
-      });
     });
 
     it('traduce los otros usos del formulario', async () => {
@@ -248,8 +246,22 @@ describe('API MGC Seguros', () => {
       expect(response.statusCode).toBe(200);
       expect(response.body.estado).toBe('Aceptada');
       expect(response.body.motivoRechazo).toBeNull();
-      expect(response.body.poliza).toMatchObject({ estatus: 'Activa', solicitudId: created.body.solicitudId });
+      expect(response.body.poliza).toMatchObject({
+        estatus: 'Activa',
+        solicitudId: created.body.solicitudId,
+        id: expect.stringMatching(/^MGC-TOY-COR-2024-/),
+        numeroSerieVehiculo: expect.stringMatching(/^[A-Z0-9]{17}$/),
+        archivoPdfUrl: expect.stringMatching(/^\/docs\/polizas\/MGC-TOY-COR-2024-/)
+      });
       expect(await Poliza.findOne({ where: { solicitudId: created.body.solicitudId } })).not.toBeNull();
+      const pdfPath = `public${response.body.poliza.archivoPdfUrl}`;
+      expect(fs.existsSync(pdfPath)).toBe(true);
+      expect(fs.readFileSync(pdfPath).subarray(0, 4).toString()).toBe('%PDF');
+      expect(enviarResultadoSolicitud).toHaveBeenCalledWith(expect.objectContaining({
+        email: 'accepted@mgc.com',
+        estado: 'Aceptada',
+        attachmentPath: expect.any(String)
+      }));
     });
 
     it('permite rechazar una solicitud guardando el motivo', async () => {

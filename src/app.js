@@ -7,16 +7,47 @@ const cors = require('cors');
 const { registrar, login } = require('./controladores/authController');
 const { verifyToken, verifyRole } = require('./middleware/authMiddleware');
 const { sequelize, User, Poliza, Solicitud } = require('./database/db');
-const { enviarSmsConfirmacion } = require('./servicios/smsService');
 const {
   enviarConfirmacionSolicitud,
   enviarResultadoSolicitud
 } = require('./servicios/emailService');
+const { generarPolizaPdf } = require('./servicios/policyPdfService');
 
 const app = express();
 
 const sanitizeLogMessage = (message) => String(message || 'Error desconocido')
   .replace(/[\u0000-\u001F\u007F]/g, ' ');
+
+const normalizeCode = (value) => String(value || '')
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .replace(/[^a-zA-Z0-9]/g, '')
+  .toUpperCase();
+
+const vehicleWmi = {
+  TOYOTA: 'JT2',
+  NISSAN: '3N1',
+  HONDA: 'JHM',
+  CHEVROLET: '3G1',
+  FORD: '1FM',
+  VOLKSWAGEN: '3VW',
+  MAZDA: 'JM1',
+  KIA: '3KP',
+  HYUNDAI: 'KMH'
+};
+
+const buildPolicyNumber = (solicitud) => {
+  const makeCode = normalizeCode(solicitud.make).slice(0, 3).padEnd(3, 'X');
+  const modelCode = normalizeCode(solicitud.model).slice(0, 3).padEnd(3, 'X');
+  return `MGC-${makeCode}-${modelCode}-${solicitud.year}-${String(solicitud.id).padStart(6, '0')}`;
+};
+
+const buildVehicleSerial = (solicitud) => {
+  const wmi = vehicleWmi[normalizeCode(solicitud.make)] || 'MGC';
+  const modelCode = normalizeCode(solicitud.model).slice(0, 3).padEnd(3, 'X');
+  const sequence = String(solicitud.id).padStart(8, '0');
+  return `${wmi}${modelCode}${String(solicitud.year).slice(-1)}A${sequence}V`;
+};
 
 app.use(cors());
 app.use(express.json());
@@ -61,18 +92,6 @@ app.post('/api/solicitudes', async (req, res) => {
       estado: 'Pendiente',
       motivoRechazo: null
     });
-
-    try {
-      await enviarSmsConfirmacion({
-        phone: solicitud.phone,
-        name: solicitud.name
-      });
-    } catch (smsError) {
-      console.error(
-        'No fue posible enviar el SMS de confirmación:',
-        smsError.message
-      );
-    }
 
     try {
       await enviarConfirmacionSolicitud({
@@ -265,8 +284,8 @@ app.patch(
 
         poliza = await Poliza.create(
           {
-            id: `POL-${inicio.getFullYear()}-${String(solicitud.id).padStart(6, '0')}`,
-            numeroSerieVehiculo: `MGC-SOL-${solicitud.id}`,
+            id: buildPolicyNumber(solicitud),
+            numeroSerieVehiculo: buildVehicleSerial(solicitud),
             vigenciaInicio: dateOnly(inicio),
             vigenciaFin: dateOnly(fin),
             estatus: 'Activa',
@@ -288,6 +307,23 @@ app.patch(
 
       await transaction.commit();
 
+      let archivoPdfUrl = poliza?.archivoPdfUrl || null;
+      let attachmentPath;
+
+      if (estado === 'Aceptada' && poliza) {
+        try {
+          const generatedPdf = await generarPolizaPdf({ solicitud, poliza });
+          attachmentPath = generatedPdf.filePath;
+          archivoPdfUrl = generatedPdf.archivoPdfUrl;
+          await poliza.update({ archivoPdfUrl });
+        } catch (pdfError) {
+          console.error(
+            'No fue posible generar el PDF de la póliza:',
+            sanitizeLogMessage(pdfError.message)
+          );
+        }
+      }
+
       try {
         await enviarResultadoSolicitud({
           email: solicitud.email,
@@ -296,7 +332,8 @@ app.patch(
           motivo:
             estado === 'Rechazada'
               ? motivoRechazo.trim()
-              : null
+              : null,
+            attachmentPath
         });
       } catch (emailError) {
         console.error(
@@ -307,7 +344,9 @@ app.patch(
 
       return res.status(200).json({
         ...solicitud.toJSON(),
-        poliza
+        poliza: poliza
+          ? { ...poliza.toJSON(), archivoPdfUrl }
+          : poliza
       });
     } catch (error) {
       if (transaction) {
