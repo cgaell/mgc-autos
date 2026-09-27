@@ -66,6 +66,7 @@ app.post('/api/solicitudes', async (req, res) => {
       'make',
       'model',
       'year',
+      'vin',
       'use',
       'name',
       'email',
@@ -78,15 +79,18 @@ app.post('/api/solicitudes', async (req, res) => {
       fleet: 'Operación empresarial'
     };
 
-    if (requiredFields.some((field) => !req.body[field])) {
+    const vin = String(req.body.vin || '').trim().toUpperCase();
+
+    if (requiredFields.some((field) => !req.body[field]) || !/^[A-HJ-NPR-Z0-9]{17}$/.test(vin)) {
       return res.status(400).json({
-        error: 'Todos los campos obligatorios deben estar completos'
+        error: 'Todos los campos obligatorios deben estar completos y el VIN debe tener 17 caracteres válidos'
       });
     }
 
     const solicitud = await Solicitud.create({
       ...req.body,
       year: Number(req.body.year),
+      vin,
       use: useLabels[req.body.use] || req.body.use,
       photos: req.body.photos || {},
       estado: 'Pendiente',

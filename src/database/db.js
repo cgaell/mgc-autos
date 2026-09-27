@@ -1,8 +1,12 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('mgc_seguros', 'mgc_admin', 'milleniumglobal', {
+const sequelize = new Sequelize(
+  process.env.DB_NAME || 'mgc_seguros',
+  process.env.DB_USER || 'mgc_admin',
+  process.env.DB_PASSWORD || 'milleniumglobal',
+  {
   host: process.env.DB_HOST || '127.0.0.1',
-  port: 3306,
+  port: Number(process.env.DB_PORT || 3306),
   dialect: 'mysql',
   logging: false,
   pool: {
@@ -11,7 +15,8 @@ const sequelize = new Sequelize('mgc_seguros', 'mgc_admin', 'milleniumglobal', {
     acquire: 30000,
     idle: 10000
   }
-});
+  }
+);
 
 // Modelo de Usuarios
 const User = sequelize.define('User', {
@@ -44,6 +49,7 @@ const Solicitud = sequelize.define('Solicitud', {
   make: { type: DataTypes.STRING(80), allowNull: false },
   model: { type: DataTypes.STRING(80), allowNull: false },
   year: { type: DataTypes.INTEGER, allowNull: false },
+  vin: { type: DataTypes.STRING(17), allowNull: false },
   use: { type: DataTypes.STRING(30), allowNull: false },
   name: { type: DataTypes.STRING(120), allowNull: false },
   email: { type: DataTypes.STRING(150), allowNull: false },

@@ -179,12 +179,17 @@ describe('API MGC Seguros', () => {
   describe('Solicitudes de cotización', () => {
     const validRequest = {
       purpose: 'new', line: 'civil', vehicle: 'sedan', make: 'Toyota', model: 'Corolla', year: 2024,
-      use: 'personal', name: 'Persona Solicitante', email: 'solicitud@mgc.com', phone: '5500000000',
+      vin: 'JTDBR32E742100001', use: 'personal', name: 'Persona Solicitante', email: 'solicitud@mgc.com', phone: '5500000000',
       photos: { 'photo-front': 'frente.jpg' }
     };
 
     it('rechaza una solicitud incompleta', async () => {
       const response = await request(app).post('/api/solicitudes').send({ ...validRequest, phone: undefined });
+      expect(response.statusCode).toBe(400);
+    });
+
+    it('rechaza un VIN con formato inválido', async () => {
+      const response = await request(app).post('/api/solicitudes').send({ ...validRequest, vin: 'VIN-INVALIDO' });
       expect(response.statusCode).toBe(400);
     });
 
@@ -194,6 +199,7 @@ describe('API MGC Seguros', () => {
       expect(response.statusCode).toBe(201);
       expect(saved.estado).toBe('Pendiente');
       expect(saved.use).toBe('Uso personal');
+      expect(saved.vin).toBe(validRequest.vin);
       expect(saved.photos).toEqual(validRequest.photos);
     });
 

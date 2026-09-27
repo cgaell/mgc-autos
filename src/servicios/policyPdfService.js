@@ -3,7 +3,9 @@ const path = require('node:path');
 const PDFDocument = require('pdfkit');
 
 const publicDirectory = path.join(__dirname, '../../public');
-const policyDirectory = path.join(publicDirectory, 'docs/polizas');
+const policyDirectory = process.env.VERCEL
+  ? path.join('/tmp', 'mgc-polizas')
+  : path.join(publicDirectory, 'docs/polizas');
 const logoPath = path.join(publicDirectory, 'mgc.jpg');
 const colors = {
   blue: '#164a9c',
@@ -13,6 +15,13 @@ const colors = {
   line: '#d8dfeb',
   white: '#ffffff'
 };
+const contractedCoverages = [
+  'Responsabilidad civil por daños a terceros',
+  'Daños materiales al vehículo asegurado',
+  'Robo total del vehículo',
+  'Gastos médicos para ocupantes',
+  'Asistencia vial y legal'
+];
 
 const formatDate = (value) => new Intl.DateTimeFormat('es-MX', {
   day: '2-digit',
@@ -38,7 +47,9 @@ const generarPolizaPdf = async ({ solicitud, poliza }) => {
 
   const fileName = `${poliza.id}.pdf`;
   const filePath = path.join(policyDirectory, fileName);
-  const archivoPdfUrl = `/docs/polizas/${encodeURIComponent(fileName)}`;
+  const archivoPdfUrl = process.env.VERCEL
+    ? null
+    : `/docs/polizas/${encodeURIComponent(fileName)}`;
 
   await new Promise((resolve, reject) => {
     const document = new PDFDocument({ size: 'LETTER', margin: 50 });
@@ -75,9 +86,15 @@ const generarPolizaPdf = async ({ solicitud, poliza }) => {
     addField(document, 'Marca', solicitud.make);
     addField(document, 'Modelo', solicitud.model);
     addField(document, 'Año', solicitud.year);
+    addField(document, 'VIN', solicitud.vin);
     addField(document, 'Línea', solicitud.line);
     addField(document, 'Uso declarado', solicitud.use);
     addField(document, 'Propósito de la solicitud', solicitud.purpose);
+
+    addSectionTitle(document, 'Coberturas contratadas');
+    contractedCoverages.forEach((coverage) => {
+      document.font('Helvetica').fontSize(10).fillColor(colors.ink).text(`✓  ${coverage}`, { indent: 8 });
+    });
 
     addSectionTitle(document, 'Información proporcionada');
     const photos = Object.keys(solicitud.photos || {});
