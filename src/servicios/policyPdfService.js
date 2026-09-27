@@ -3,9 +3,8 @@ const path = require('node:path');
 const PDFDocument = require('pdfkit');
 
 const publicDirectory = path.join(__dirname, '../../public');
-const policyDirectory = process.env.VERCEL
-  ? path.join('/tmp', 'mgc-polizas')
-  : path.join(publicDirectory, 'docs/polizas');
+const policyDirectory = process.env.POLICY_STORAGE_PATH
+  || path.join(publicDirectory, 'docs/polizas');
 const logoPath = path.join(publicDirectory, 'mgc.jpg');
 const colors = {
   blue: '#164a9c',
@@ -47,9 +46,7 @@ const generarPolizaPdf = async ({ solicitud, poliza }) => {
 
   const fileName = `${poliza.id}.pdf`;
   const filePath = path.join(policyDirectory, fileName);
-  const archivoPdfUrl = process.env.VERCEL
-    ? null
-    : `/docs/polizas/${encodeURIComponent(fileName)}`;
+  const archivoPdfUrl = `/docs/polizas/${encodeURIComponent(fileName)}`;
 
   await new Promise((resolve, reject) => {
     const document = new PDFDocument({ size: 'LETTER', margin: 50 });

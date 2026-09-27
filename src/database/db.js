@@ -1,20 +1,20 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME || 'mgc_seguros',
-  process.env.DB_USER || 'mgc_admin',
-  process.env.DB_PASSWORD || 'milleniumglobal',
+  process.env.DB_NAME || process.env.MYSQLDATABASE || 'mgc_seguros',
+  process.env.DB_USER || process.env.MYSQLUSER || 'mgc_admin',
+  process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || 'milleniumglobal',
   {
-  host: process.env.DB_HOST || '127.0.0.1',
-  port: Number(process.env.DB_PORT || 3306),
-  dialect: 'mysql',
-  logging: false,
-  pool: {
-    max: 20,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  }
+    host: process.env.DB_HOST || process.env.MYSQLHOST || '127.0.0.1',
+    port: Number(process.env.DB_PORT || process.env.MYSQLPORT || 3306),
+    dialect: 'mysql',
+    logging: false,
+    pool: {
+      max: 20,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
   }
 );
 
